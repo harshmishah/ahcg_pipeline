@@ -17,8 +17,13 @@ Clone ahcg_pipeline from GitHub
 - Open the folder and download lib files : git pull origin master (for Python3, GATK, Picard, Bowtie & Trimmomatic)
 
 Installations:
-- Samtools
+- Samtools : sudo apt-get install samtools	
 - Java
+	sudo apt-get install software-properties-common python-software-properties
+	sudo add-apt-repository ppa:webupd8team/java
+	sudo apt-get update
+	sudo apt-get install oracle-java8-installer
+	java -version
 
 Downloads:
 - Ref genome and dbsnp: www.prism.gatech.edu/~sravishankar9/resources.tar.gz
