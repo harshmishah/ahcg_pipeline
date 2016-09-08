@@ -64,3 +64,21 @@ GIT commands to upload files/folder
 - git add <filename or * for everything>
 - git commit -m "comment describing the upload"
 - git push origin master
+
+Get gene annotation file 
+- wget http://vannberg.biology.gatech.edu/data/ahcg2016/reference_genome/hg19_refGene.txt
+
+Locate BRCA1 gene and variants
+- grep BRCA1 hg19_refGene.txt 
+- Found 6 variants
+- Find which one is best
+	- Go to https://dnasu.org/DNASU/Home.do
+	- Search BRCA and select reference HsCD00022337
+	- Go to Reference Sequence Alignment
+	- Based on this alignment NM_007294 was the best 
+- Use the NM_007294 to get genome coordinates and create a bed file
+	- grep NM_007294 hg19_refGene.txt > test.txt
+	- use the script bed.py to convert it to bed file
+- Get fasta sequences from bedtools
+	- Install bedtools : sudo apt-get install bedtools
+	- bedtools getfasta -s -fo brcafa.fa -fi ./resources/genome/hg19.fa -bed brca1.bed
