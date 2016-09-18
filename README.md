@@ -56,18 +56,19 @@ Extract:
 ``` {sh}
 tar -xvzf resources.tar.gz
 ```
+
 - Test data:
-Download: 
+	- Download: 
 ``` {sh}
 wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
 wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
 ```
-Extract: 
+	- Extract: 
 ```{sh}
 gunzip NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
 gunzip NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
 ```
-Build a test set: 
+	- Build a test set: 
 ``` {sh}
 head -100000 NIST7035_TAAGGCGA_L001_R1_001.fastq > test_r1.fastq
 head -100000 NIST7035_TAAGGCGA_L001_R2_001.fastq > test_r2.fastq
@@ -156,13 +157,11 @@ grep BRCA1 hg19_refGene.txt
 	- grep NM_007294 hg19_refGene.txt > test.txt
 	- use the script bed.py to convert it to bed file
 - Get fasta sequences from bedtools
-	- Install bedtools :
-		``` {sh}
-		 sudo apt-get install bedtools
-		```
-	``` {sh}
-	 bedtools getfasta -s -fo brcafa.fa -fi ./resources/genome/hg19.fa -bed brca1.bed
-	```
+	- Install bedtools & get fasta :
+``` {sh}
+sudo apt-get install bedtools
+bedtools getfasta -s -fo brcafa.fa -fi ./resources/genome/hg19.fa -bed brca1.bed
+```
 
 Extracting reads mapped to region of interest
 - Download four bam files of  NA12878 exome from GIAB ftp website
