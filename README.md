@@ -1,35 +1,91 @@
-# ahcg_pipeline
-Variant calling pipeline for genomic data analysis
+AHCG PIPELINE README 
+BY HARSHMI SHAH
 
-## Requirements
+Download 
+- VirtualBox :
+```{sh} https://www.virtualbox.org/wiki/Downloads ```
+- Basespace Native App VM 
+```{sh} https://da1s119xsxmu0.cloudfront.net/sites/developer/native/nativeappsvm/BaseSpace%20Native%20App%20VM%20(phix%20only)%20v9.ova ```
 
-1. [Python3 - version 3.4.1](https://www.python.org/download/releases/3.4.1/)
-2. [Trimmomatic - version 0.36](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.36.zip)
-3. [Bowtie2 - version 2.2.9](https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.9/)
-4. [Picard tools - version 2.6.0](https://github.com/broadinstitute/picard/releases/download/2.6.0/picard.jar)
-5. [GATK - version 3.4](https://software.broadinstitute.org/gatk/download/)
+Import Basespace Native App VM in Virtual Box
+- Open File tab -> Import Appliance -> Browse and select Basespace's .ova file
+- Start
 
-## Reference genome
+Connect via PuTTY
+- Username : basespace@localhost
+- Port : 2222
+- Password : basespace
 
-Reference genomes can be downloaded from [Illumina iGenomes](http://support.illumina.com/sequencing/sequencing_software/igenome.html)
-
-## Test data
-
-Use the following protocol to download and prepare test dataset from NIST sample NA12878
-
+Clone ahcg_pipeline from GitHub
 ```{sh}
-wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
-wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
-gunzip NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
-gunzip NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
-head -100000 NIST7035_TAAGGCGA_L001_R1_001.fastq > test_r1.fastq
-head -100000 NIST7035_TAAGGCGA_L001_R2_001.fastq > test_r2.fastq
+- git clone https://github.com/shashidhar22/ahcg_pipeline.git
+- Open the folder and download lib files : git pull origin master (for Python3 v3.4.1, GATK v3.4, Picard v2.6.0, Bowtie v2.2.9 & Trimmomatic v0.36)
 ```
 
-## Help
-
-To access help use the following command:
-
-```{sh}
-python3 ahcg_pipeline.py -h
+Installations:
+- Samtools 
+``` {sh} sudo apt-get install samtools	```
+- Java
+``` {sh}
+	sudo apt-get install software-properties-common python-software-properties
+	sudo add-apt-repository ppa:webupd8team/java
+	sudo apt-get update
+	sudo apt-get install oracle-java8-installer
+	java -version
 ```
+
+Downloads:
+- Reference genome and dbsnp: 
+	Download: www.prism.gatech.edu/~sravishankar9/resources.tar.gz
+	Extract: tar -xvzf resources.tar.gz
+- Test data:
+	Download: wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
+		  wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
+	Extract: gunzip NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
+		 gunzip NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
+	Build a test set: head -100000 NIST7035_TAAGGCGA_L001_R1_001.fastq > test_r1.fastq
+			  head -100000 NIST7035_TAAGGCGA_L001_R2_001.fastq > test_r2.fastq
+
+Getting index files
+- Bowtie :  ./lib/bowtie2-2.2.9/bowtie2-build -f ./resources/genome/hg19.fa hg19
+- Fasta index using Samtools : samtools faidx ./resources/genome/hg19.fa
+- Genome dict file using picard : java -jar ./lib/picard.jar CreateSequenceDictionary R=./resources/genome/hg19.fa O=hg19.dict 
+
+Run the script:
+- Help : python3 ahcg_pipeline.py -h
+- Command :
+python3 ahcg_pipeline.py -t ./lib/Trimmomatic-0.36/trimmomatic-0.36.jar -b ./lib/bowtie2-2.2.9/bowtie2 -p ./lib/picard.jar -g ./lib/GenomeAnalysisTK.jar -i /path/to/folder/test*.fastq -w /path/to/folder/hg19 -d ./resources/dbsnp/dbsnp_138.hg19.vcf -r ./resources/genome/hg19.fa -a ./lib/Trimmomatic-0.36/adapters/TruSeq2-PE.fa -o <outputdir>
+
+Change the remote URL for GIT Repository
+- Fork the original repository to personal GitHub
+- Change the remote URL for GIT Repository by adding the URL of personal repository in .git/config file
+
+GIT Ignore
+- Use the .gitignore file to add files/directories that you want to ignore when updating the git repository 
+
+Set up name & email address
+- git config --global user.email johndoe@example.com
+- git config --global user.name "John Doe"
+
+GIT commands to upload files/folder
+- git add <filename or * for everything>
+- git commit -m "comment describing the upload"
+- git push origin master
+
+Get gene annotation file 
+- wget http://vannberg.biology.gatech.edu/data/ahcg2016/reference_genome/hg19_refGene.txt
+
+Locate BRCA1 gene and variants
+- grep BRCA1 hg19_refGene.txt 
+- Found 6 variants
+- Find which one is best
+	- Go to https://dnasu.org/DNASU/Home.do
+	- Search BRCA and select reference HsCD00022337
+	- Go to Reference Sequence Alignment
+	- Based on this alignment NM_007294 was the best 
+- Use the NM_007294 to get genome coordinates and create a bed file
+	- grep NM_007294 hg19_refGene.txt > test.txt
+	- use the script bed.py to convert it to bed file
+- Get fasta sequences from bedtools
+	- Install bedtools : sudo apt-get install bedtools
+	- bedtools getfasta -s -fo brcafa.fa -fi ./resources/genome/hg19.fa -bed brca1.bed
