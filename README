@@ -2,8 +2,10 @@ AHCG PIPELINE README
 BY HARSHMI SHAH
 
 Download 
-- VirtualBox : https://www.virtualbox.org/wiki/Downloads
-- Basespace Native App VM : https://da1s119xsxmu0.cloudfront.net/sites/developer/native/nativeappsvm/BaseSpace%20Native%20App%20VM%20(phix%20only)%20v9.ova
+- VirtualBox :
+```{sh} https://www.virtualbox.org/wiki/Downloads ```
+- Basespace Native App VM 
+```{sh} https://da1s119xsxmu0.cloudfront.net/sites/developer/native/nativeappsvm/BaseSpace%20Native%20App%20VM%20(phix%20only)%20v9.ova ```
 
 Import Basespace Native App VM in Virtual Box
 - Open File tab -> Import Appliance -> Browse and select Basespace's .ova file
@@ -15,17 +17,22 @@ Connect via PuTTY
 - Password : basespace
 
 Clone ahcg_pipeline from GitHub
+```{sh}
 - git clone https://github.com/shashidhar22/ahcg_pipeline.git
 - Open the folder and download lib files : git pull origin master (for Python3 v3.4.1, GATK v3.4, Picard v2.6.0, Bowtie v2.2.9 & Trimmomatic v0.36)
+```
 
 Installations:
-- Samtools : sudo apt-get install samtools	
+- Samtools 
+``` {sh} sudo apt-get install samtools	```
 - Java
+``` {sh}
 	sudo apt-get install software-properties-common python-software-properties
 	sudo add-apt-repository ppa:webupd8team/java
 	sudo apt-get update
 	sudo apt-get install oracle-java8-installer
 	java -version
+```
 
 Downloads:
 - Reference genome and dbsnp: 
