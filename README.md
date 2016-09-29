@@ -178,3 +178,27 @@ samtools view -L <bed file> -b -o <output bam file> <input bam file>
 bedtools bamtofastq -i <bam file> -fq <fastq r1> -fq2 <fastq r2>
 ```
 
+Verification of variant call:
+- Extract the lines corresponding to the genes in breastcancer_genes.txt from reference file (hg19_refGene.txt)
+``` {sh}
+awk '{print "\\<" $2 "\\>" }' breastcancer_genes.txt > genelist.txt
+grep -f genelist.txt hg19_refGene.txt > bed.txt
+```
+- Use bed.py to create bed file using the genes in bed.txt
+``` {sh}
+./bed.py -i bed.txt -o outputfile.bed
+```
+- Compare the variants.vcf file with the outputfile.bed 
+``` {sh}
+bedtools intersect -a variants.vcf -b outputfile.bed > outfile1
+```
+- Compare the GIAB vcf file with outputfile.bed
+``` {sh}
+add "chr" to get correct match
+awk '{if($0 !~ /^#/) print "chr"$0; else print $0}' NA12878_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-Solid-10X_CHROM1-X_v3.3_highconf.vcf > giab_with_chr.vcf
+bedtools intersect -a giab_with_chr.vcf -b outputfile.bed > outfile2
+```
+- Compare the intersected files
+``` {sh}
+bedtools intersect -a outputfile1 -b outfile2 > outfile
+```
