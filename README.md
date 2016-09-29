@@ -1,5 +1,6 @@
 HARSHMI SHAH
 
+
 Download 
 - VirtualBox :
 ``` {sh} 
@@ -10,14 +11,17 @@ https://www.virtualbox.org/wiki/Downloads
 https://da1s119xsxmu0.cloudfront.net/sites/developer/native/nativeappsvm/BaseSpace%20Native%20App%20VM%20(phix%20only)%20v9.ova 
 ```
 
+
 Import Basespace Native App VM in Virtual Box
 - Open File tab -> Import Appliance -> Browse and select Basespace's .ova file
 - Start
+
 
 Connect via PuTTY
 - Username : basespace@localhost
 - Port : 2222
 - Password : basespace
+
 
 Requirements:
 - Python3 v3.4.1
@@ -26,11 +30,13 @@ Requirements:
 - Bowtie v2.2.9
 - Trimmomatic v0.36)
 
+
 Clone AHCG Pipeline from GitHub and get all requirements
 ``` {sh}
 git clone https://github.com/shashidhar22/ahcg_pipeline.git
 git pull origin master 
 ```
+
 
 Installations:
 - Samtools 
@@ -46,6 +52,7 @@ sudo apt-get install samtools
 	java -version
 ```
 
+
 Downloads:
 - Reference genome and dbsnp: 
 Download: 
@@ -56,6 +63,7 @@ Extract:
 ``` {sh}
 tar -xvzf resources.tar.gz
 ```
+
 
 - Test data:
 
@@ -75,6 +83,7 @@ head -100000 NIST7035_TAAGGCGA_L001_R1_001.fastq > test_r1.fastq
 head -100000 NIST7035_TAAGGCGA_L001_R2_001.fastq > test_r2.fastq
 ```
 
+
 Getting index files
 - Bowtie :
 ``` {sh}
@@ -88,6 +97,7 @@ samtools faidx ./resources/genome/hg19.fa
 ``` {sh}
 java -jar ./lib/picard.jar CreateSequenceDictionary R=./resources/genome/hg19.fa O=hg19.dict 
 ```
+
 
 Run the script:
 - Help : 
@@ -119,18 +129,22 @@ python3 ahcg_pipeline.py
 		Path to output directory
 ```
 
+
 Change the remote URL for GIT Repository
 - Fork the original repository to personal GitHub
 - Change the remote URL for GIT Repository by adding the URL of personal repository in .git/config file
 
+
 GIT Ignore
 - Use the .gitignore file to add files/directories that you want to ignore when updating the git repository 
+
 
 Set up name & email address
 ``` {sh}
 git config --global user.email johndoe@example.com
 git config --global user.name "John Doe"
 ```
+
 
 GIT commands to upload files/folder
 ``` {sh}
@@ -139,10 +153,12 @@ git commit -m "comment describing the upload"
 git push origin master
 ```
 
+
 Get gene annotation file 
 ``` {sh}
 wget http://vannberg.biology.gatech.edu/data/ahcg2016/reference_genome/hg19_refGene.txt
 ```
+
 
 Locate BRCA1 gene and variants
 ```{sh}
@@ -164,6 +180,7 @@ sudo apt-get install bedtools
 bedtools getfasta -s -fo brcafa.fa -fi ./resources/genome/hg19.fa -bed brca1.bed
 ```
 
+
 Extracting reads mapped to region of interest
 - Download four bam files of  NA12878 exome from GIAB ftp website
 ``` {sh}
@@ -178,6 +195,7 @@ samtools view -L <bed file> -b -o <output bam file> <input bam file>
 bedtools bamtofastq -i <bam file> -fq <fastq r1> -fq2 <fastq r2>
 ```
 
+
 Verification of variant call:
 - Extract the lines corresponding to the genes in breastcancer_genes.txt from reference file (hg19_refGene.txt)
 ``` {sh}
@@ -190,15 +208,15 @@ grep -f genelist.txt hg19_refGene.txt > bed.txt
 ```
 - Compare the variants.vcf file with the outputfile.bed 
 ``` {sh}
-bedtools intersect -a variants.vcf -b outputfile.bed > outfile1
+bedtools intersect -header -wa -a variants.vcf -b outputfile.bed > outfile1
 ```
 - Compare the GIAB vcf file with outputfile.bed
 ``` {sh}
 add "chr" to get correct match
 awk '{if($0 !~ /^#/) print "chr"$0; else print $0}' NA12878_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-Solid-10X_CHROM1-X_v3.3_highconf.vcf > giab_with_chr.vcf
-bedtools intersect -a giab_with_chr.vcf -b outputfile.bed > outfile2
+bedtools intersect -header -wa -a giab_with_chr.vcf -b outputfile.bed > outfile2
 ```
 - Compare the intersected files
 ``` {sh}
-bedtools intersect -a outputfile1 -b outfile2 > outfile
+bedtools intersect -header -a outputfile1 -b outfile2 > outfile
 ```
