@@ -30,8 +30,9 @@ with open(inputfile) as f:
 		aEnd = end.split(',')
 
 
-		for l in range(len(aGene)):
-			o.write(aGene[2] + "\t" + aStart[l] + "\t" + aEnd[l] + "\t" + aGene[1] + ':' + aGene[12] + "\t" + "NA" + "\t" + aGene[3])
+		for l in range(len(aStart) - 1):
+					
+			o.write(aGene[2] + "\t" + str(int(aStart[l]) - 20) + "\t" + str(int(aEnd[l]) + 20) + "\t" + aGene[1] + ':' + aGene[12] + "\t" + "NA" + "\t" + aGene[3])
 			o.write("\n") 
 
 
