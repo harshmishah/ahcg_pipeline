@@ -65,7 +65,7 @@ tar -xvzf resources.tar.gz
 ```
 
 
-- Test data:
+Test data:
 
 	- Download: 
 ``` {sh}
@@ -220,3 +220,39 @@ bedtools intersect -header -wa -a giab_with_chr.vcf -b outputfile.bed > outfile2
 ``` {sh}
 bedtools intersect -header -a outputfile1 -b outfile2 > outfile
 ```
+
+
+VariantRecalibrator
+- Download the bundle files
+``` {sh}
+ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/2.8/hg19/hapmap_3.3.hg19.sites.vcf.idx.gz
+ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/2.8/hg19/1000G_omni2.5.hg19.sites.vcf.gz
+ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/2.8/hg19/1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz
+```
+- Gunzip them all
+- Bgzip them
+- Run the variant recalibrator
+``` {sh}
+java -Xmx4g -jar ./lib/GenomeAnalysisTK.jar \
+-T VariantRecalibrator \
+-R ./resources/genome/hg19.fa \
+-input ./oct_4/variants.vcf \
+-resource:hapmap,known=false,training=true,truth=true,prior=15.0 ./oct_4/hapmap_3.3.hg19.sites.vcf.gz \
+-resource:omni,known=false,training=true,truth=false,prior=12.0 ./oct_4/1000G_omni2.5.hg19.sites.vcf.gz \
+-resource:1000G,known=false,training=true,truth=false,prior=10.0 ./oct_4/1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz \
+-resource:dbsnp,known=true,training=false,truth=false,prior=2.0 ./resources/dbsnp/dbsnp_138.hg19.vcf \
+-an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR \
+-mode SNP -recalFile output.recal -tranchesFile output.tranches -rscriptFile output.plots.R
+```
+- Run GATK again to get vcf file
+``` {sh}
+java -jar ./lib/GenomeAnalysisTK.jar \ 
+    -T ApplyRecalibration \ 
+    -R ./path/to/reference.fa \ 
+    -input ./path/to/raw_variants.vcf \ 
+    -mode SNP \ 
+    --ts_filter_level 99.0 \ 
+    -recalFile recalibrate_SNP.recal \ 
+    -tranchesFile recalibrate_SNP.tranches \ 
+    -o recalibrated_snps_raw_indels.vcf
+``` 
