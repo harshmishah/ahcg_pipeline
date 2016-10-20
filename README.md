@@ -256,3 +256,12 @@ java -jar ./lib/GenomeAnalysisTK.jar \
     -tranchesFile recalibrate_SNP.tranches \ 
     -o recalibrated_snps_raw_indels.vcf
 ``` 
+
+Coverage 
+``` {sh}
+grep 'NM_007298' bcoc_padded.bed > brca1.bed
+samtools view -L brca1.bed data/project.NIST_NIST7035_H7AP8ADXX_TAAGGCGA_1_NA12878.bwa.markDuplicates.bam -b > new.bam
+bedtools genomecov -ibam new.bam -bga na12878.bga.bed
+bedtools intersect -split -a brca1.bed -b na12878.bga.bed -bed > brca1.coverage_joined.bed
+awk '{printf("%s\t%s\t%s\t%s\t%s\t%s\n",$1,$2,$3,$4,$10,$6)}' brca1.coverage_joined.bed > brca1.coverage_final.bed
+```
