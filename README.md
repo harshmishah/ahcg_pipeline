@@ -261,7 +261,34 @@ Coverage
 ``` {sh}
 grep 'NM_007298' bcoc_padded.bed > brca1.bed
 samtools view -L brca1.bed data/project.NIST_NIST7035_H7AP8ADXX_TAAGGCGA_1_NA12878.bwa.markDuplicates.bam -b > new.bam
-bedtools genomecov -ibam new.bam -bga na12878.bga.bed
-bedtools intersect -split -a brca1.bed -b na12878.bga.bed -bed > brca1.coverage_joined.bed
-awk '{printf("%s\t%s\t%s\t%s\t%s\t%s\n",$1,$2,$3,$4,$10,$6)}' brca1.coverage_joined.bed > brca1.coverage_final.bed
+bedtools genomecov -ibam new.bam -bga > na12878.bga.bed
+bedtools intersect -loj -a brca1.bed -b na12878.bga.bed -bed > brca1.join_final.bed
+awk '{printf("%s\t%s\t%s\t%s\t%s\t%s\n",$1,$8,$8,$4,$10,$6)}' brca1.join_final.bed \
+| sed -E -e 's/^chr//' > brca1.final.bed
+
+bedtools intersect -a brca1.final.bed -b brca_clinical_nonbenign_xref.vcf -wo > brca_clinical_nonbenign_final.bed
+
+awk '{printf("%s\t%s\t%s\t%s\t%s\t%s\n",$1,$2,$3,$4,$10,$6)}' brca1.join_final.bed > brca1.depths.bed
+python cov.py brca1.depths.bed brca_depth.txt
+Rscript draw_depth.R brca_depth.txt brca_depth.png
+```
+
+DCM
+```{sh}
+#shrink clinvar to just DCM genes
+bedtools intersect -a clinvar.vcf.gz -b dcm_gene_list.bed -header > clinvar_allfrombed.vcf
+
+#recalibrate all variants using VQSR
+vcf_vqrs.sh patient2_variants.vcf
+vcf_apply_recal.sh patient2_variants.vcf
+
+#shrink variants to just DCM genes
+bedtools intersect -a patient2_variants_recal.vcf -b dcm_gene_list.bed -header > patient2_dcm_final.vcf
+
+#match variants to clinvar
+bedtools intersect -b patient2_dcm_final.vcf -a clinvar_allfrombed.vcf -header > patient2_intersect_clinvar.vcf
+
+#generate simple report on findings
+python3 parse_clnsig.py -i patient2_intersect_clinvar.vcf.gz 2>&1 | tee patient2_simple_report.txt
+cut -c 24- patient2_simple_report.txt
 ```
