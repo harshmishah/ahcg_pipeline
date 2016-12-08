@@ -1,29 +1,29 @@
 HARSHMI SHAH
 
 
-Download 
-- VirtualBox :
+##Download 
+###- VirtualBox :
 ``` {sh} 
 https://www.virtualbox.org/wiki/Downloads 
 ```
-- Basespace Native App VM 
+###- Basespace Native App VM 
 ``` {sh} 
 https://da1s119xsxmu0.cloudfront.net/sites/developer/native/nativeappsvm/BaseSpace%20Native%20App%20VM%20(phix%20only)%20v9.ova 
 ```
 
 
-Import Basespace Native App VM in Virtual Box
+##Import Basespace Native App VM in Virtual Box
 - Open File tab -> Import Appliance -> Browse and select Basespace's .ova file
 - Start
 
 
-Connect via PuTTY
+##Connect via PuTTY
 - Username : basespace@localhost
 - Port : 2222
 - Password : basespace
 
 
-Requirements:
+##Requirements:
 - Python3 v3.4.1
 - GATK v3.4
 - Picard v2.6.0 
@@ -31,19 +31,19 @@ Requirements:
 - Trimmomatic v0.36)
 
 
-Clone AHCG Pipeline from GitHub and get all requirements
+##Clone AHCG Pipeline from GitHub and get all requirements
 ``` {sh}
 git clone https://github.com/shashidhar22/ahcg_pipeline.git
 git pull origin master 
 ```
 
 
-Installations:
-- Samtools 
+##Installations:
+###- Samtools 
 ``` {sh} 
 sudo apt-get install samtools	
 ```
-- Java
+###- Java
 ``` {sh}
 	sudo apt-get install software-properties-common python-software-properties
 	sudo add-apt-repository ppa:webupd8team/java
@@ -53,58 +53,58 @@ sudo apt-get install samtools
 ```
 
 
-Downloads:
-- Reference genome and dbsnp: 
-Download: 
+##Downloads:
+###- Reference genome and dbsnp: 
+####Download: 
 ``` {sh}
 wget  www.prism.gatech.edu/~sravishankar9/resources.tar.gz
 ```
-Extract: 
+####Extract: 
 ``` {sh}
 tar -xvzf resources.tar.gz
 ```
 
 
-Test data:
+##Test data:
 
-	- Download: 
+###	- Download: 
 ``` {sh}
 wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
 wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
 ```
-	- Extract: 
+###	- Extract: 
 ```{sh}
 gunzip NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
 gunzip NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
 ```
-	- Build a test set: 
+###	- Build a test set: 
 ``` {sh}
 head -100000 NIST7035_TAAGGCGA_L001_R1_001.fastq > test_r1.fastq
 head -100000 NIST7035_TAAGGCGA_L001_R2_001.fastq > test_r2.fastq
 ```
 
 
-Getting index files
-- Bowtie :
+##Getting index files
+###- Bowtie :
 ``` {sh}
 ./lib/bowtie2-2.2.9/bowtie2-build -f ./resources/genome/hg19.fa hg19
 ```
-- Fasta index using Samtools : 
+###- Fasta index using Samtools : 
 ``` {sh}
 samtools faidx ./resources/genome/hg19.fa
 ```
-- Genome dict file using picard : 
+###- Genome dict file using picard : 
 ``` {sh}
 java -jar ./lib/picard.jar CreateSequenceDictionary R=./resources/genome/hg19.fa O=hg19.dict 
 ```
 
 
-Run the script:
-- Help : 
+##Run the script:
+###- Help : 
 ``` {sh}
 python3 ahcg_pipeline.py -h
 ```
-- Command :
+###- Command :
 ```{sh}
 python3 ahcg_pipeline.py 
 -t ./lib/Trimmomatic-0.36/trimmomatic-0.36.jar
@@ -130,23 +130,23 @@ python3 ahcg_pipeline.py
 ```
 
 
-Change the remote URL for GIT Repository
+##Change the remote URL for GIT Repository
 - Fork the original repository to personal GitHub
 - Change the remote URL for GIT Repository by adding the URL of personal repository in .git/config file
 
 
-GIT Ignore
+##GIT Ignore
 - Use the .gitignore file to add files/directories that you want to ignore when updating the git repository 
 
 
-Set up name & email address
+##Set up name & email address
 ``` {sh}
 git config --global user.email johndoe@example.com
 git config --global user.name "John Doe"
 ```
 
 
-GIT commands to upload files/folder
+##GIT commands to upload files/folder
 ``` {sh}
 git add <filename or * for everything>
 git commit -m "comment describing the upload"
@@ -154,13 +154,13 @@ git push origin master
 ```
 
 
-Get gene annotation file 
+##Get gene annotation file 
 ``` {sh}
 wget http://vannberg.biology.gatech.edu/data/ahcg2016/reference_genome/hg19_refGene.txt
 ```
 
 
-Locate BRCA1 gene and variants
+##Locate BRCA1 gene and variants
 ```{sh}
 grep BRCA1 hg19_refGene.txt
 ``` 
@@ -181,57 +181,57 @@ bedtools getfasta -s -fo brcafa.fa -fi ./resources/genome/hg19.fa -bed brca1.bed
 ```
 
 
-Extracting reads mapped to region of interest
-- Download four bam files of  NA12878 exome from GIAB ftp website
+##Extracting reads mapped to region of interest
+###- Download four bam files of  NA12878 exome from GIAB ftp website
 ``` {sh}
 ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/
 ```
-- Use Samtools to get the region of interest i.e. BRCA1
+###- Use Samtools to get the region of interest i.e. BRCA1
 ``` {sh}
 samtools view -L <bed file> -b -o <output bam file> <input bam file>
 ```
-- Convert bam to fastq
+###- Convert bam to fastq
 ``` {sh}
 bedtools bamtofastq -i <bam file> -fq <fastq r1> -fq2 <fastq r2>
 ```
 
 
-Verification of variant call:
-- Extract the lines corresponding to the genes in breastcancer_genes.txt from reference file (hg19_refGene.txt)
+##Verification of variant call:
+###- Extract the lines corresponding to the genes in breastcancer_genes.txt from reference file (hg19_refGene.txt)
 ``` {sh}
 awk '{print "\\<" $2 "\\>" }' breastcancer_genes.txt > genelist.txt
 grep -f genelist.txt hg19_refGene.txt > bed.txt
 ```
-- Use bed.py to create bed file using the genes in bed.txt
+###- Use bed.py to create bed file using the genes in bed.txt
 ``` {sh}
 ./bed.py -i bed.txt -o outputfile.bed
 ```
-- Compare the variants.vcf file with the outputfile.bed 
+###- Compare the variants.vcf file with the outputfile.bed 
 ``` {sh}
 bedtools intersect -header -wa -a variants.vcf -b outputfile.bed > outfile1
 ```
-- Compare the GIAB vcf file with outputfile.bed
+###- Compare the GIAB vcf file with outputfile.bed
 ``` {sh}
 add "chr" to get correct match
 awk '{if($0 !~ /^#/) print "chr"$0; else print $0}' NA12878_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-Solid-10X_CHROM1-X_v3.3_highconf.vcf > giab_with_chr.vcf
 bedtools intersect -header -wa -a giab_with_chr.vcf -b outputfile.bed > outfile2
 ```
-- Compare the intersected files
+###- Compare the intersected files
 ``` {sh}
 bedtools intersect -header -a outputfile1 -b outfile2 > outfile
 ```
 
 
-VariantRecalibrator
-- Download the bundle files
+##VariantRecalibrator
+###- Download the bundle files
 ``` {sh}
 ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/2.8/hg19/hapmap_3.3.hg19.sites.vcf.idx.gz
 ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/2.8/hg19/1000G_omni2.5.hg19.sites.vcf.gz
 ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/2.8/hg19/1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz
 ```
-- Gunzip them all
-- Bgzip them
-- Run the variant recalibrator
+###- Gunzip them all
+###- Bgzip them
+###- Run the variant recalibrator
 ``` {sh}
 java -Xmx4g -jar ./lib/GenomeAnalysisTK.jar \
 -T VariantRecalibrator \
@@ -244,8 +244,8 @@ java -Xmx4g -jar ./lib/GenomeAnalysisTK.jar \
 -an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR \
 -mode SNP -recalFile output.recal -tranchesFile output.tranches -rscriptFile output.plots.R
 ```
-- Run GATK again to get vcf file
-``` {sh}
+###- Run GATK again to get vcf file
+```{sh}
 java -jar ./lib/GenomeAnalysisTK.jar \ 
     -T ApplyRecalibration \ 
     -R ./path/to/reference.fa \ 
@@ -257,7 +257,7 @@ java -jar ./lib/GenomeAnalysisTK.jar \
     -o recalibrated_snps_raw_indels.vcf
 ``` 
 
-Coverage 
+##Coverage 
 ``` {sh}
 grep 'NM_007298' bcoc_padded.bed > brca1.bed
 samtools view -L brca1.bed data/project.NIST_NIST7035_H7AP8ADXX_TAAGGCGA_1_NA12878.bwa.markDuplicates.bam -b > new.bam
@@ -273,7 +273,7 @@ python cov.py brca1.depths.bed brca_depth.txt
 Rscript draw_depth.R brca_depth.txt brca_depth.png
 ```
 
-DCM
+##DCM
 ```{sh}
 #shrink clinvar to just DCM genes
 bedtools intersect -a clinvar.vcf.gz -b dcm_gene_list.bed -header > clinvar_allfrombed.vcf
@@ -293,7 +293,7 @@ python3 parse_clnsig.py -i patient2_intersect_clinvar.vcf.gz 2>&1 | tee patient2
 cut -c 24- patient2_simple_report.txt
 ```
 
-Master Script README
+##Master Script README
 ```{sh}
 
 README: README_master_script
@@ -303,6 +303,8 @@ Usage:
 
 Example:
 ./master_script.sh results ./Patient1_RG_MD_IR_BQ.bam ./dcm_gene_list.bed ./clinvar.vcf
+
+Results for patient 1: "res" folder (https://github.com/harshmishah/ahcg_pipeline/tree/master/res)
 
 Requirements:
 1. Python3 v3.4.1
