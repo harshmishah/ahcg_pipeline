@@ -352,7 +352,7 @@ Directory Structure:
 	- output_dir_name
 ```
 
-Master Script (master_script.sh)
+##Master Script (master_script.sh)
 ```{sh}
 #!/bin/bash
 
