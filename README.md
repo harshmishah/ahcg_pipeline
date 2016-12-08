@@ -284,6 +284,8 @@ Rscript draw_depth.R brca_depth.txt brca_depth.png
 
 ##DCM
 ```{sh}
+Clinvar file : ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/clinvar.vcf.gz
+
 #shrink clinvar to just DCM genes
 bedtools intersect -a clinvar.vcf.gz -b dcm_gene_list.bed -header > clinvar_allfrombed.vcf
 
