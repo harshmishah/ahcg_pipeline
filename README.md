@@ -259,7 +259,12 @@ java -jar ./lib/GenomeAnalysisTK.jar \
 
 ##Cross reference to get clinical significance
 ```{sh}
-python3 compare_clin_with_vcf.py recalibrated_snps_raw_indels.vcf BRCA1_brca_exchange_variants.csv BRCA2_brca_exchange_variants.csv \
+
+BRCA Exchange gold standard files:
+wget http://vannberg.biology.gatech.edu/data/ahcg2016/BRCA/BRCA1_brca_exchange_database_p.tsv
+wget http://vannberg.biology.gatech.edu/data/ahcg2016/BRCA/BRCA2_brca_exchange_database_p.tsv
+
+python3 compare_clin_with_vcf.py recalibrated_snps_raw_indels.vcf BRCA1_brca_exchange_database_p.tsv BRCA2_brca_exchange_database_p.tsv \
 | tee brca_clinical_xref.txt
 
 grep -vi benign brca_clinical_xref.txt > brca_clinical_nonbenign_xref.txt
@@ -285,6 +290,7 @@ Rscript draw_depth.R brca_depth.txt brca_depth.png
 ##DCM
 ```{sh}
 Clinvar file : ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/clinvar.vcf.gz
+DCM Variants : http://vannberg.biology.gatech.edu/data/ahcg2016/LMNA/LMNA_database_p.tsv
 
 #shrink clinvar to just DCM genes
 bedtools intersect -a clinvar.vcf.gz -b dcm_gene_list.bed -header > clinvar_allfrombed.vcf
