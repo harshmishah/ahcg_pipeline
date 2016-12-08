@@ -39,7 +39,7 @@ Directory Structure:
 			- hg19.fa
 		*dbsnp
 			- dbsnp_138.hg19.vcf
-	- pipeline.sh
+	- master_script.sh
 	- clinvar.vcf
 	- Patient1_RG_MD_IR_BQ.bam
 	- Patient1_RG_MD_IR_BQ.bai
