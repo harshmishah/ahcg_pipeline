@@ -292,3 +292,56 @@ bedtools intersect -b patient2_dcm_final.vcf -a clinvar_allfrombed.vcf -header >
 python3 parse_clnsig.py -i patient2_intersect_clinvar.vcf.gz 2>&1 | tee patient2_simple_report.txt
 cut -c 24- patient2_simple_report.txt
 ```
+
+Master Script
+```{sh}
+Usage: 
+./master_script.sh <output_dir_name> <patient_bam_file> <gene_list_bed> <clinvar vcf>
+
+Example:
+./master_script.sh results ./Patient1_RG_MD_IR_BQ.bam ./dcm_gene_list.bed ./clinvar.vcf
+
+Requirements:
+1. Python3 v3.4.1
+	- logging
+	- vcf (pyvcf)
+	- click
+2. GATK v3.4
+3. R v3.1.2
+	- ggplot2
+4. Bedtools v2.26.0
+5. Samtools v0.1.19
+5. Imagemagick 
+	- convert
+
+Steps:
+1. Variant Calling using GATK's HaplotypeCaller
+2. Recalibrating using GATK's VQSR ie VariantRecalibrator & ApplyRecalibration
+3. Cross referencing variants file with clinvar file using bedtools
+4. Coverage Calculation using samtools & bedtools
+5. Report Generation using convert
+
+Directory Structure:
+/home/basespace/ahcg_pipeline
+	- lib
+		* bowtie2-2.2.9
+			-bowtie2
+		* GATK ie GenomeAnalysisTK.jar
+	- resources
+		* genome
+			- hg19.fa
+		*dbsnp
+			- dbsnp_138.hg19.vcf
+	- master_script.sh
+	- clinvar.vcf
+	- Patient1_RG_MD_IR_BQ.bam
+	- Patient1_RG_MD_IR_BQ.bai
+	- oct_4
+		* hapmap_3.3.hg19.sites.vcf.gz
+		* 1000G_omni2.5.hg19.sites.vcf.gz
+		* 1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz
+	- cov.py
+	- dcm_gene_list.bed
+	- draw_depth.R
+	- parse_clnsig.py
+	- output_dir_name
