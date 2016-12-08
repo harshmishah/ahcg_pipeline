@@ -295,6 +295,9 @@ cut -c 24- patient2_simple_report.txt
 
 Master Script
 ```{sh}
+
+README: README_master_script
+
 Usage: 
 ./master_script.sh <output_dir_name> <patient_bam_file> <gene_list_bed> <clinvar vcf>
 
@@ -345,3 +348,4 @@ Directory Structure:
 	- draw_depth.R
 	- parse_clnsig.py
 	- output_dir_name
+```
